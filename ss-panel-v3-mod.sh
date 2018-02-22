@@ -22,7 +22,7 @@ install_ss_panel_mod_v3(){
 	chattr +i public/.user.ini
 	wget -N -P  /usr/local/nginx/conf/ --no-check-certificate https://raw.githubusercontent.com/mmmwhy/ss-panel-and-ss-py-mu/master/nginx.conf
 	service nginx restart
-	IPAddress=`wget http://members.3322.org/dyndns/getip -O - -q ; echo`;
+	IPAddress=`wget http://whatismyip.akamai.com/ -O - -q ; echo`;
 	sed -i "s#103.74.192.11#${IPAddress}#" /home/wwwroot/default/sql/sspanel.sql
 	mysql -uroot -proot -e"create database sspanel;" 
 	mysql -uroot -proot -e"use sspanel;" 
@@ -70,13 +70,13 @@ python_test(){
 	pypi='mirror-ord.pypi.io'
 	doubanio='pypi.doubanio.com'
 	pubyun='pypi.pubyun.com'	
-	tsinghua_PING=`ping -c 1 -w 1 $tsinghua|grep time=|awk '{print $7}'|sed "s/time=//"`
-	pypi_PING=`ping -c 1 -w 1 $pypi|grep time=|awk '{print $7}'|sed "s/time=//"`
-	doubanio_PING=`ping -c 1 -w 1 $doubanio|grep time=|awk '{print $7}'|sed "s/time=//"`
-	pubyun_PING=`ping -c 1 -w 1 $pubyun|grep time=|awk '{print $7}'|sed "s/time=//"`
+	tsinghua_PING=`ping -c 1 -w 1 $tsinghua|grep time=|awk '{print $8}'|sed "s/time=//"`
+	pypi_PING=`ping -c 1 -w 1 $pypi|grep time=|awk '{print $8}'|sed "s/time=//"`
+	doubanio_PING=`ping -c 1 -w 1 $doubanio|grep time=|awk '{print $8}'|sed "s/time=//"`
+	pubyun_PING=`ping -c 1 -w 1 $pubyun|grep time=|awk '{print $8}'|sed "s/time=//"`
 	echo "$tsinghua_PING $tsinghua" > ping.pl
 	echo "$pypi_PING $pypi" >> ping.pl
-	echo "$doubanio_PING $doubanio" > ping.pl
+	echo "$doubanio_PING $doubanio" >> ping.pl
 	echo "$pubyun_PING $pubyun" >> ping.pl
 	pyAddr=`sort -V ping.pl|sed -n '1p'|awk '{print $2}'`
 	if [ "$pyAddr" == "$tsinghua" ]; then
@@ -232,11 +232,10 @@ install_node(){
 	read -p "Please input your muKey(like:mupass): " Usermukey
 	read -p "Please input your Node_ID(like:1): " UserNODE_ID
 	install_ssr_for_each
-	IPAddress=`wget http://members.3322.org/dyndns/getip -O - -q ; echo`;
 	cd /root/shadowsocks
 	echo -e "modify Config.py...\n"
 	sed -i "s#'zhaoj.in'#'jd.hk'#" /root/shadowsocks/userapiconfig.py
-	Userdomain=${Userdomain:-"http://${IPAddress}"}
+	Userdomain=${Userdomain:-"http://127.0.0.1"}
 	sed -i "s#https://zhaoj.in#${Userdomain}#" /root/shadowsocks/userapiconfig.py
 	Usermukey=${Usermukey:-"mupass"}
 	sed -i "s#glzjin#${Usermukey}#" /root/shadowsocks/userapiconfig.py
